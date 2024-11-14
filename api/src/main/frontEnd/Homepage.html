@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avatar Pokemon</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            height: 100vh;
+            margin: 0;
+        }
+        
+        /* Left Section */
+        .left-section {
+            width: 50%;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-color: #f9f9f9;
+            position: relative;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            font-weight: bold;
+            color: #333;
+            background-color: #fff;
+            border: 1px solid #333;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background-color: #f1f1f1;
+        }
+
+        .left-section h1 {
+            font-size: 1.8em;
+            margin: 60px 0 10px 20px; /* Adjusted to provide space for the back button */
+        }
+
+        .left-section p {
+            font-size: 1em;
+            margin: 0 0 20px 20px;
+            color: #555;
+        }
+
+        .left-section input[type="text"] {
+            padding: 8px;
+            font-size: 1em;
+            width: 100%;
+            max-width: 200px;
+            margin: 0 0 10px 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .left-section button {
+            padding: 8px 15px;
+            font-size: 1em;
+            font-weight: bold;
+            color: #333;
+            background-color: #fff;
+            border: 1px solid #333;
+            border-radius: 5px;
+            cursor: pointer;
+            width: auto;
+            max-width: 200px;
+            align-self: start;
+            margin-left: 20px;
+        }
+
+        .left-section button:hover {
+            background-color: #f1f1f1;
+        }
+        
+        /* Right Section */
+        .right-section {
+            width: 50%;
+            background-color: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .avatar-display {
+            width: 250px;
+            height: 300px;
+            background-color: #fff;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            color: black;
+        }
+
+        .description {
+            text-align: left;
+            width: 250px;
+        }
+
+        .description h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.2em;
+        }
+
+        .description label {
+            display: block;
+            margin: 5px 0 2px;
+            font-weight: bold;
+        }
+
+        .description input {
+            width: 100%;
+            padding: 5px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="left-section">
+        <a href="http://127.0.0.1:5500/api/src/main/frontEnd/StartPokemon.html" class="back-button">Back</a>
+        <h1>Avatar Pokemon</h1>
+        <p>Please choose a pokemon and click the search button to see the avatar.</p>
+        <input type="text" id="pokemonName" placeholder="Search">
+        <button onclick="searchAvatar()">Search</button>
+    </div>
+
+    <div class="right-section">
+        <div class="avatar-display" id="avatarDisplay">
+            <!-- Avatar image will be displayed here -->
+        </div>
+        <div class="description">
+            <h3>Description</h3>
+            <label for="pokemonNameResult">Name:</label>
+            <input type="text" id="pokemonNameResult" readonly>
+            
+            <label for="pokemonTypeResult">Type:</label>
+            <input type="text" id="pokemonTypeResult" readonly>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

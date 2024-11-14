@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokemon List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        #pokemon-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            width: 80%;
+            max-width: 1200px;
+        }
+
+        .pokemon-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .pokemon-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .pokemon-card h2 {
+            font-size: 1.8em;
+            margin: 10px 0;
+            color: #333;
+        }
+
+        .pokemon-type {
+            font-size: 1.1em;
+            color: #777;
+            font-style: italic;
+        }
+
+        .pagination {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .pagination button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            margin: 0 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .pagination button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Pokemon List</h1>
+<div id="pokemon-list">
+    <!-- Pokémon cards will be dynamically added here -->
+</div>
+
+<div id="pagination" class="pagination">
+    <!-- Pagination buttons will be added dynamically here -->
+</div>
+
+<script>
+    let currentPage = 0;  // Track current page
+
+    // Function to fetch Pokémon data from the Spring Boot backend API
+    function fetchPokemons(page = 0) {
+        fetch(`http://localhost:8080/api/pokemon`)
+            .then(response => response.json())  // Parse the response as JSON
+            .then(data => {
+                displayPokemonList(data.content);  // Display the Pokémon data
+                setupPagination(data.pageNo, data.totalPages);  // Set up pagination
+            })
+            .catch(error => console.error('Error fetching data:', error));  // Handle any errors
+    }
+
+    // Function to display the Pokémon list dynamically
+    function displayPokemonList(pokemonData) {
+        const pokemonList = document.getElementById("pokemon-list");
+        pokemonList.innerHTML = '';  // Clear previous entries if any
+
+        // Iterate over the array of Pokémon (data.content)
+        pokemonData.forEach(pokemon => {
+            const pokemonCard = document.createElement("div");  // Create a new div for each card
+            pokemonCard.classList.add("pokemon-card");  // Add a class for styling
+
+            // Set the inner HTML of the Pokémon card
+            pokemonCard.innerHTML = `
+                <h2>${pokemon.name}</h2>
+                <p class="pokemon-type">Type: ${pokemon.type}</p>
+            `;
+
+            // Append the newly created card to the pokemon list container
+            pokemonList.appendChild(pokemonCard);
+        });
+    }
+
+    // Function to set up pagination buttons
+    function setupPagination(currentPage, totalPages) {
+        const paginationDiv = document.getElementById("pagination");
+        paginationDiv.innerHTML = '';  // Clear previous pagination buttons
+
+        // Add Previous button
+        const prevButton = document.createElement("button");
+        prevButton.textContent = 'Previous';
+        prevButton.disabled = currentPage === 0;
+        prevButton.onclick = () => {
+            if (currentPage > 0) {
+                fetchPokemons(currentPage - 1);
+            }
+        };
+        paginationDiv.appendChild(prevButton);
+
+        // Add Next button
+        const nextButton = document.createElement("button");
+        nextButton.textContent = 'Next';
+        nextButton.disabled = currentPage === totalPages - 1;
+        nextButton.onclick = () => {
+            if (currentPage < totalPages - 1) {
+                fetchPokemons(currentPage + 1);
+            }
+        };
+        paginationDiv.appendChild(nextButton);
+    }
+
+    // Initially fetch the first page of Pokémon
+    fetchPokemons(currentPage);
+</script>
+
+</body>
+</html>
