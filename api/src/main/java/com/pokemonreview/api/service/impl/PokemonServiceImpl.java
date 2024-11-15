@@ -27,17 +27,19 @@ public class PokemonServiceImpl implements PokemonService {
     @Override
     public PokemonDto createPokemon(PokemonDto pokemonDto) {
         Pokemon pokemon = new Pokemon();
+        pokemon.setUrl(pokemonDto.getUrl());
         pokemon.setName(pokemonDto.getName());
         pokemon.setType(pokemonDto.getType());
-        pokemon.setUrl(pokemonDto.getUrl());
+        
 
         Pokemon newPokemon = pokemonRepository.save(pokemon);
 
         PokemonDto pokemonResponse = new PokemonDto();
         pokemonResponse.setId(newPokemon.getId());
+        pokemonResponse.setUrl(newPokemon.getUrl());
         pokemonResponse.setName(newPokemon.getName());
         pokemonResponse.setType(newPokemon.getType());
-        pokemonResponse.setUrl(newPokemon.getUrl());
+        
         return pokemonResponse;
 
     }
@@ -70,9 +72,10 @@ public class PokemonServiceImpl implements PokemonService {
     public PokemonDto updatePokemon(PokemonDto pokemonDto, int id) {
         Pokemon pokemon = pokemonRepository.findById(id).orElseThrow(() -> new PokemonNotFoundException("Pokemon could no be updated"));
 
+        pokemon.setUrl(pokemonDto.getUrl());
         pokemon.setName(pokemonDto.getName());
         pokemon.setType(pokemonDto.getType());
-        pokemon.setUrl(pokemonDto.getUrl());
+        
 
         Pokemon updatedPokemon = pokemonRepository.save(pokemon);
 
@@ -88,17 +91,18 @@ public class PokemonServiceImpl implements PokemonService {
     private PokemonDto mapToDto(Pokemon pokemon) {
         PokemonDto pokemonDto = new PokemonDto();
         pokemonDto.setId(pokemon.getId());
+        pokemonDto.setUrl(pokemon.getUrl());
         pokemonDto.setName(pokemon.getName());
         pokemonDto.setType(pokemon.getType());
-        pokemonDto.setUrl(pokemon.getUrl());
+        
         return pokemonDto;
     }
 
     private Pokemon mapToEntity(PokemonDto pokemonDto) {
         Pokemon pokemon = new Pokemon();
+        pokemon.setUrl(pokemonDto.getUrl());
         pokemon.setName(pokemonDto.getName());
         pokemon.setType(pokemonDto.getType());
-        pokemon.setUrl(pokemonDto.getUrl());
         return pokemon;
     }
 

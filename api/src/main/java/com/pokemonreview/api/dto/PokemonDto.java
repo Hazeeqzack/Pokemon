@@ -5,7 +5,8 @@ import lombok.Data;
 @Data
 public class PokemonDto {
     private int id;
+    private String url;
     private String name;
     private String type;
-    private String url;
+    
 }

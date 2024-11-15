@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Pokémon</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        h2 {
+            text-align: center;
+        }
+        .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            font-weight: bold;
+            display: block;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .form-group button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .form-group button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Update Pokémon</h2>
+    <div class="form-container">
+        <form id="updateForm">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="type">Type</label>
+                <input type="text" id="type" name="type" required>
+            </div>
+            <div class="form-group">
+                <label for="url">Image URL</label>
+                <input type="url" id="url" name="url" required>
+            </div>
+            <div class="form-group">
+                <button type="submit">Update Pokémon</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Function to get query parameter from URL
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Function to fetch Pokémon data and pre-fill the form
+        function fetchPokemonData() {
+            const pokemonId = getQueryParam('id');
+            if (pokemonId) {
+                fetch(`http://localhost:8080/api/pokemon/${pokemonId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data) {
+                            document.getElementById('name').value = data.name;
+                            document.getElementById('type').value = data.type;
+                            document.getElementById('url').value = data.url;
+                        } else {
+                            alert('Pokémon not found');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching Pokémon data:', error);
+                        alert('Error fetching Pokémon data');
+                    });
+            } else {
+                alert('No Pokémon ID provided');
+            }
+        }
+
+        // Function to handle form submission
+        document.getElementById('updateForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const pokemonId = getQueryParam('id');
+            const name = document.getElementById('name').value;
+            const type = document.getElementById('type').value;
+            const url = document.getElementById('url').value;
+
+            const updatedData = {
+                name: name,
+                type: type,
+                url: url
+            };
+
+            fetch(`http://localhost:8080/api/pokemon/${pokemonId}/update`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Pokémon updated successfully');
+                window.location.href = 'http://127.0.0.1:5500/api/src/main/frontEnd/ReadPokemon.html'; // Redirect back to the list page
+            })
+            .catch(error => {
+                console.error('Error updating Pokémon:', error);
+                alert('Error updating Pokémon');
+            });
+        });
+
+        // Fetch Pokémon data on page load
+        window.onload = fetchPokemonData;
+    </script>
+
+</body>
+</html>

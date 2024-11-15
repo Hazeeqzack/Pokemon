@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #000;
+            color: #fff;
+            padding: 10px 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .header .next-button {
+            background-color: #fff;
+            color: #000;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+        .header .next-button:hover {
+            background-color: #ddd;
+        }
+        .pokemon-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+        .pokemon-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .pokemon-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            width: 200px;
+            text-align: center;
+            background-color: #f9f9f9;
+        }
+        .pokemon-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .pokemon-card h3 {
+            margin: 10px 0 5px;
+        }
+        .pokemon-card p {
+            margin: 0 0 10px;
+            font-size: 14px;
+        }
+        .edit-button {
+            background-color: #000;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .edit-button:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button onclick="window.history.back()" class="back-button">◀</button>
+        <h1>Pokémon</h1>
+        <button class="next-button">Next</button>
+    </div>
+
+    <h2 style="text-align: center; margin-top: 20px;">POKÉMON LIST</h2>
+    <div id="pokemonList" class="pokemon-container">
+        <!-- Pokémon cards will be displayed here -->
+    </div>
+
+    <script>
+        // Function to fetch and display Pokémon data
+        function fetchPokemonData() {
+            fetch("http://127.0.0.1:8080/api/pokemon")
+                .then(response => response.json())
+                .then(data => {
+                    const pokemonList = document.getElementById("pokemonList");
+                    pokemonList.innerHTML = ""; // Clear previous content
+
+                    // Check if content exists in the response
+                    if (data && data.content && Array.isArray(data.content)) {
+                        data.content.forEach(pokemon => {
+                            // Create a card for each Pokémon
+                            const pokemonCard = document.createElement("div");
+                            pokemonCard.classList.add("pokemon-card");
+
+                            pokemonCard.innerHTML = `
+                                <img src="${pokemon.url}" alt="${pokemon.name}" />
+                                <h3>${pokemon.name.toUpperCase()}</h3>
+                                <p>Type: ${pokemon.type}</p>
+                                <button class="edit-button" onclick="editPokemon(${pokemon.id})">Edit</button>
+                            `;
+
+                            // Append the card to the list
+                            pokemonList.appendChild(pokemonCard);
+                        });
+                    } else {
+                        pokemonList.innerHTML = "<p>No Pokémon data found.</p>";
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching Pokémon data:', error);
+                    document.getElementById("pokemonList").innerHTML = "<p style='color: red;'>Error fetching data.</p>";
+                });
+        }
+
+        // Function to redirect to the update page
+        function editPokemon(pokemonId) {
+            window.location.href = `http://127.0.0.1:5500/api/src/main/frontEnd/UpdatePokemon.html?id=${pokemonId}`;
+        }
+
+        // Call the function to fetch data on page load
+        window.onload = fetchPokemonData;
+    </script>
+</body>
+</html>
