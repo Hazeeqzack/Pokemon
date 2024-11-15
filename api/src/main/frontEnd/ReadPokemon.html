@@ -42,11 +42,6 @@
             gap: 20px;
             padding: 20px;
         }
-        .pokemon-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
         .pokemon-card {
             border: 1px solid #ddd;
             border-radius: 8px;
@@ -67,17 +62,30 @@
             margin: 0 0 10px;
             font-size: 14px;
         }
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .edit-button, .delete-button {
+            padding: 8px 12px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
         .edit-button {
             background-color: #000;
             color: #fff;
-            border: none;
-            padding: 8px 12px;
-            cursor: pointer;
-            margin-bottom: 10px;
-            border-radius: 4px;
         }
         .edit-button:hover {
             background-color: #333;
+        }
+        .delete-button {
+            background-color: #ff4d4d;
+            color: #fff;
+        }
+        .delete-button:hover {
+            background-color: #ff3333;
         }
     </style>
 </head>
@@ -113,7 +121,10 @@
                                 <img src="${pokemon.url}" alt="${pokemon.name}" />
                                 <h3>${pokemon.name.toUpperCase()}</h3>
                                 <p>Type: ${pokemon.type}</p>
-                                <button class="edit-button" onclick="editPokemon(${pokemon.id})">Edit</button>
+                                <div class="button-group">
+                                    <button class="edit-button" onclick="editPokemon(${pokemon.id})">Edit</button>
+                                    <button class="delete-button" onclick="deletePokemon(${pokemon.id})">Delete</button>
+                                </div>
                             `;
 
                             // Append the card to the list
@@ -132,6 +143,27 @@
         // Function to redirect to the update page
         function editPokemon(pokemonId) {
             window.location.href = `http://127.0.0.1:5500/api/src/main/frontEnd/UpdatePokemon.html?id=${pokemonId}`;
+        }
+
+        // Function to delete Pokémon
+        function deletePokemon(pokemonId) {
+            if (confirm("Are you sure you want to delete this Pokémon?")) {
+                fetch(`http://localhost:8080/api/pokemon/${pokemonId}/delete`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Pokémon deleted successfully.');
+                        fetchPokemonData(); // Refresh the list
+                    } else {
+                        alert('Error deleting Pokémon.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting Pokémon:', error);
+                    alert('Error deleting Pokémon.');
+                });
+            }
         }
 
         // Call the function to fetch data on page load
