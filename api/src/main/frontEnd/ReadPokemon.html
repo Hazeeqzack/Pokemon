@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokémon List</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/swiper/swiper-bundle.min.css"
+    />
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -23,7 +27,13 @@
             margin: 0;
             font-size: 24px;
         }
-        .header .next-button {
+        .header .button-group {
+            display: flex;
+            gap: 10px;
+        }
+        .header .back-button,
+        .header .next-button,
+        .header .create-button {
             background-color: #fff;
             color: #000;
             border: none;
@@ -32,15 +42,18 @@
             font-size: 16px;
             border-radius: 4px;
         }
-        .header .next-button:hover {
+        .header .back-button:hover,
+        .header .next-button:hover,
+        .header .create-button:hover {
             background-color: #ddd;
         }
-        .pokemon-container {
+        .swiper {
+            width: 100%;
+            padding: 20px 0;
+        }
+        .swiper-slide {
             display: flex;
-            flex-wrap: wrap;
             justify-content: center;
-            gap: 20px;
-            padding: 20px;
         }
         .pokemon-card {
             border: 1px solid #ddd;
@@ -91,16 +104,22 @@
 </head>
 <body>
     <div class="header">
-        <button onclick="window.history.back()" class="back-button">◀</button>
+        <button onclick="window.history.back()" class="back-button">Back</button>
         <h1>Pokémon</h1>
-        <button class="next-button">Next</button>
+        <div class="button-group">
+            <button class="create-button" onclick="createPokemon()">Create</button>
+            <button class="next-button">Next</button>
+        </div>
     </div>
 
     <h2 style="text-align: center; margin-top: 20px;">POKÉMON LIST</h2>
-    <div id="pokemonList" class="pokemon-container">
-        <!-- Pokémon cards will be displayed here -->
+    <div class="swiper">
+        <div class="swiper-wrapper" id="pokemonList">
+            <!-- Pokémon cards will be displayed here -->
+        </div>
     </div>
 
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <script>
         // Function to fetch and display Pokémon data
         function fetchPokemonData() {
@@ -113,22 +132,44 @@
                     // Check if content exists in the response
                     if (data && data.content && Array.isArray(data.content)) {
                         data.content.forEach(pokemon => {
-                            // Create a card for each Pokémon
-                            const pokemonCard = document.createElement("div");
-                            pokemonCard.classList.add("pokemon-card");
+                            // Create a slide for each Pokémon
+                            const slide = document.createElement("div");
+                            slide.classList.add("swiper-slide");
 
-                            pokemonCard.innerHTML = `
-                                <img src="${pokemon.url}" alt="${pokemon.name}" />
-                                <h3>${pokemon.name.toUpperCase()}</h3>
-                                <p>Type: ${pokemon.type}</p>
-                                <div class="button-group">
-                                    <button class="edit-button" onclick="editPokemon(${pokemon.id})">Edit</button>
-                                    <button class="delete-button" onclick="deletePokemon(${pokemon.id})">Delete</button>
+                            slide.innerHTML = `
+                                <div class="pokemon-card">
+                                    <img src="${pokemon.url}" alt="${pokemon.name}" />
+                                    <h3>${pokemon.name.toUpperCase()}</h3>
+                                    <p>Type: ${pokemon.type}</p>
+                                    <div class="button-group">
+                                        <button class="edit-button" onclick="editPokemon(${pokemon.id})">Edit</button>
+                                        <button class="delete-button" onclick="deletePokemon(${pokemon.id})">Delete</button>
+                                    </div>
                                 </div>
                             `;
 
-                            // Append the card to the list
-                            pokemonList.appendChild(pokemonCard);
+                            // Append the slide to the Swiper wrapper
+                            pokemonList.appendChild(slide);
+                        });
+
+                        // Initialize Swiper after data is loaded
+                        new Swiper('.swiper', {
+                            loop: false,
+                            slidesPerView: 1,
+                            spaceBetween: 20,
+                            navigation: {
+                                nextEl: '.swiper-button-next',
+                                prevEl: '.swiper-button-prev',
+                            },
+                            pagination: {
+                                el: '.swiper-pagination',
+                                clickable: true,
+                            },
+                            breakpoints: {
+                                640: { slidesPerView: 1 },
+                                768: { slidesPerView: 2 },
+                                1024: { slidesPerView: 3 },
+                            },
                         });
                     } else {
                         pokemonList.innerHTML = "<p>No Pokémon data found.</p>";
@@ -164,6 +205,11 @@
                     alert('Error deleting Pokémon.');
                 });
             }
+        }
+
+        // Function to redirect to the Create Pokémon page
+        function createPokemon() {
+            window.location.href = "http://127.0.0.1:5500/api/src/main/frontEnd/CreatePokemon.html";
         }
 
         // Call the function to fetch data on page load
