@@ -98,14 +98,6 @@ public class PokemonServiceImpl implements PokemonService {
         return pokemonDto;
     }
 
-    private Pokemon mapToEntity(PokemonDto pokemonDto) {
-        Pokemon pokemon = new Pokemon();
-        pokemon.setUrl(pokemonDto.getUrl());
-        pokemon.setName(pokemonDto.getName());
-        pokemon.setType(pokemonDto.getType());
-        return pokemon;
-    }
-
 }
 
 
